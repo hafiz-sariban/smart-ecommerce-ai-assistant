@@ -6,7 +6,7 @@ import os
 from processor import engineer_features, get_similarity_matrix
 
 # --- 1. Page Config & Branding ---
-st.set_page_config(page_title="Nano-Retail AI Assistant", layout="wide")
+st.set_page_config(page_title="Smart E-Commerce AI Assistant", layout="wide")
 
 # --- 2. Data & Model Loading ---
 @st.cache_data
@@ -47,7 +47,7 @@ X_input = [[current_user['total_views'], current_user['total_cart_adds'],
 risk_proba = model.predict_proba(X_input)[0][1] if model else 0.0
 
 # --- 5. Main UI ---
-st.title("🛒 AI Smart E-Commerce Dashboard")
+st.title("🛒 Smart E-Commerce AI Assistant Dashboard")
 m1, m2, m3, m4 = st.columns(4)
 m1.metric("Total Views", int(current_user['total_views']))
 m2.metric("Cart Adds", int(current_user['total_cart_adds']))
@@ -68,29 +68,49 @@ with tab1:
             st.plotly_chart(px.bar(merged['category'].value_counts().reset_index(), x='category', y='count'), width='stretch')
 
 with tab2:
-    st.subheader("Collaborative Filtering Recommendations")
+    st.subheader("🎯 Collaborative Filtering Recommendations")
     ui_matrix, sim_df = get_similarity_matrix(df_events)
     
     if selected_id in sim_df.index:
-        # Find similar users and items they liked 
+        # 1. Find the top 3 most similar users (Neighbors)
+        # We exclude the first one because it's the user themselves
         similar_users = sim_df[selected_id].sort_values(ascending=False)[1:4].index.tolist()
+        sim_scores = sim_df[selected_id].sort_values(ascending=False)[1:4].values.tolist()
+        
         current_user_items = ui_matrix.loc[selected_id]
         recs = []
         
         for user in similar_users:
+            # Recommend products the similar user 'rated' highly (>2 means at least a Cart or Purchase)
             top_items = ui_matrix.loc[user][ui_matrix.loc[user] > 2].index.tolist()
             recs.extend([i for i in top_items if current_user_items[i] == 0])
         
         final_recs = list(set(recs))[:3]
+        
         if final_recs:
+            # --- The "Why" Explanation Section ---
+            st.info(f"**AI Insight:** These products are recommended because your behavior matches 3 other 'Neighbor' shoppers with a **{(sum(sim_scores)/3)*100:.1f}% similarity score**.")
+            
             rec_df = df_products[df_products['product_id'].isin(final_recs)]
             cols = st.columns(len(rec_df))
+            
             for i, (idx, row) in enumerate(rec_df.iterrows()):
                 with cols[i]:
                     st.write(f"**{row['product_name']}**")
+                    st.caption(f"Category: {row['category']}")
                     st.button(f"Buy RM{row['price']}", key=f"rec_{i}")
+                    
+            # Explaining the Collaborative Logic
+            with st.expander("🔍 How does this recommendation work?"):
+                st.write("""
+                **User-to-User Collaborative Filtering:**
+                - Our AI calculated a **Similarity Matrix** using Cosine Similarity.
+                - We identified users who have similar 'event profiles' to yours (similar views and carts).
+                - We then looked for products those 'Neighbors' purchased that you haven't seen yet.
+                - **The Goal:** To suggest high-intent items based on community trends rather than just your own history.
+                """)
         else:
-            st.write("Browsing more items will help AI improve recommendations.")
+            st.write("AI is still building your neighborhood profile. Try viewing more items!")
 
 # --- 6. AI Explainability & Actionable Insights ---
 st.markdown("---")
