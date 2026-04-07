@@ -92,31 +92,47 @@ with tab2:
         else:
             st.write("Browsing more items will help AI improve recommendations.")
 
-# --- 6. AI Explainability & Merchant Strategies ---
+# --- 6. AI Explainability & Actionable Insights ---
 st.markdown("---")
-with st.expander("💡 AI Explainability & Actionable Insights"):
-    st.write(f"**Analysis for User {selected_id}:**")
+with st.expander("💡 AI Explainability"):
+    st.write(f"### Deep Analysis for User: {selected_id}")
+    
+    # --- Part A: Explaining the Score ---
+    st.subheader("1. Risk Score Derivation")
+    col_a, col_b = st.columns(2)
+    
+    with col_a:
+        st.write("**Model Input Features:**")
+        # Display the actual raw numbers the model is looking at
+        st.write(f"- **Engagement Depth:** {int(current_user['total_views'])} views")
+        st.write(f"- **Intent Signal:** {int(current_user['total_cart_adds'])} items added to cart")
+        st.write(f"- **Interest Breadth:** {int(current_user['unique_categories'])} unique categories explored")
+        st.write(f"- **Conversion Tension:** {current_user['cart_to_view_ratio']:.2f} (Cart-to-View Ratio)")
+
+    # --- Part B: Strategy Decision Tree ---
+    st.markdown("---")
+    st.subheader("2. Strategic Decision Engine")
     
     if risk_proba > 0.6:
-        st.error(f"High Abandonment Risk ({risk_proba*100:.1f}%) detected.")
+        st.error(f"⚠️ High Abandonment Risk: {risk_proba*100:.1f}% AI Confidence")
         
-        # Strategy 1: Price Sensitive Abandoner
-        if current_user['cart_to_view_ratio'] > 0.7:
-            st.subheader("🎯 Strategy: Price-Incentive Conversion")
-            st.write("Interpretation: User is adding almost everything they see to the cart but not checking out. This usually indicates price comparison behavior.")
-            st.info("**Merchant Action:** Trigger a limited-time '10% Discount Code' or 'Free Shipping' popup immediately.")
+        # We define why we chose the specific strategy
+        if current_user['cart_to_view_ratio'] > 0.8:
+            st.subheader("🎯 Selection: Price-Incentive Strategy")
+            st.write("**Decision Logic:** Since the user's Cart-to-View ratio is extremely high (>0.8), the AI interprets this as 'Price Sensitivity'. The user wants the items but is hesitant at the final price point.")
+            st.success("**Merchant Action:** Automated 10% 'Checkout Now' discount triggered.")
             
-        # Strategy 2: Indecisive/Comparison Shopper
         elif current_user['unique_categories'] > 5:
-            st.subheader("🎯 Strategy: Curation & Focus")
-            st.write("Interpretation: User is browsing too many different categories. They are likely overwhelmed or 'window shopping'.")
-            st.info("**Merchant Action:** Send a 'Best Sellers' email or show a 'Most Popular in [Top Category]' side-widget to narrow their focus.")
+            st.subheader("🎯 Selection: Curation & Focus Strategy")
+            st.write("**Decision Logic:** The user has explored over 5 categories. High category diversity often leads to 'Decision Fatigue'. They are lost in the catalog.")
+            st.success("**Merchant Action:** Show 'Top 3 Recommendations' in their most-viewed category to narrow choice.")
             
-        # Strategy 3: Low Engagement Abandoner
         else:
-            st.subheader("🎯 Strategy: Urgency & Scarcity")
-            st.write("Interpretation: Low session depth despite items in cart. User might be losing interest.")
-            st.info("**Merchant Action:** Display a 'Low Stock' alert or '3 people have this in their cart' notification to create urgency.")
+            st.subheader("🎯 Selection: Urgency & Scarcity Strategy")
+            st.write("**Decision Logic:** The user has items in the cart but low overall session engagement. They are likely to go 'cold' soon.")
+            st.success("**Merchant Action:** Display 'Limited Stock' or 'Flash Sale' timer to create immediate FOMO.")
 
     else:
-        st.success("Stable behavior profile. Strategy: Standard retargeting and loyalty rewards.")
+        st.success("✅ Stable Behavior Profile")
+        st.write("**Decision Logic:** Behavior matches typical 'Healthy Browsing' patterns. No aggressive intervention needed.")
+        st.info("**Merchant Action:** Maintain standard loyalty retargeting.")
