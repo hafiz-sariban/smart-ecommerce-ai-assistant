@@ -60,18 +60,6 @@ Smart E-Commerce AI Assistant is a dual-engine AI prototype designed to empower 
 
     streamlit run src/app.py
 
-📂 Project Structure
-
-Smart_E-Commerce_AI_Assistant/
-├── data/               # Contains users.csv, products.csv, and events.csv
-├── models/             # Saved ML model files (.pkl)
-├── src/
-│   ├── app.py          # Main Streamlit dashboard & UI logic
-│   ├── processor.py    # Feature engineering & similarity algorithms
-│   └── train_model.py  # Script to train the Random Forest classifier
-├── requirements.txt    # List of project dependencies
-└── README.md           # Project documentation
-
 🧠 AI Methodology
 
     - Feature Engineering: Raw event strings (e.g., 'U000001') are transformed into behavior metrics like "Cart-to-View Ratio" and "Category Diversity".
