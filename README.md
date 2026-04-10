@@ -1,6 +1,6 @@
 🛍️ Smart E-Commerce AI Assistant
 
-Team Name: Team P (League 2)
+Team Name: NEXTCART (League 2)
 
 Project Objective: Transforming Online Retail with Predictive Analytics
 

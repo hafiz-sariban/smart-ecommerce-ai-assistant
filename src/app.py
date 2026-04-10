@@ -42,8 +42,18 @@ with st.sidebar:
 user_features = engineer_features(df_events, df_products)
 current_user = user_features[user_features['user_id'] == selected_id].iloc[0]
 
-X_input = [[current_user['total_views'], current_user['total_cart_adds'], 
-            current_user['unique_categories'], current_user['cart_to_view_ratio']]]
+# 1. Define the exact feature names used during training
+feature_cols = ['total_views', 'total_cart_adds', 'unique_categories', 'cart_to_view_ratio']
+
+# 2. Convert your input into a DataFrame with those names
+X_input = pd.DataFrame([[
+    current_user['total_views'], 
+    current_user['total_cart_adds'], 
+    current_user['unique_categories'], 
+    current_user['cart_to_view_ratio']
+]], columns=feature_cols)
+
+# 3. Use the DataFrame for prediction
 risk_proba = model.predict_proba(X_input)[0][1] if model else 0.0
 
 # --- 5. Main UI ---

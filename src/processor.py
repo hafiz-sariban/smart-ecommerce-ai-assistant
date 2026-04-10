@@ -5,7 +5,7 @@ def engineer_features(df_events, df_products):
     """Transforms raw logs into features for abandonment prediction."""
     df_events['user_id'] = df_events['user_id'].astype(str)
     
-    # Aggregate behavior per user [cite: 80, 81]
+    # Aggregate behavior per user
     user_behavior = df_events.groupby('user_id').agg(
         total_views=('event_type', lambda x: (x == 'view').sum()),
         total_cart_adds=('event_type', lambda x: (x == 'cart').sum()),
